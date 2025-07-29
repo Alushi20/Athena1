@@ -1,6 +1,8 @@
 import React from "react";
-import { Text, View, StyleSheet, ImageBackground, TouchableOpacity } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { NavigationProp } from "@react-navigation/native";
+import { COLORS } from '../constants/Colors';
+import { LinearGradient } from 'expo-linear-gradient';
 
 type WelcomeScreenProps = {
   navigation: NavigationProp<any>;
@@ -8,29 +10,24 @@ type WelcomeScreenProps = {
 
 export default function WelcomeScreen({ navigation }: WelcomeScreenProps) {
   return (
-    <ImageBackground
-      source={require("./HOME_PAGE.jpg")}
+    <LinearGradient
+      colors={['#004D65', '#3D8399', '#BF587C']}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
       style={styles.background}
     >
-      {/* Geometric Overlay */}
-      <View style={styles.overlay}>
-        <View style={styles.diamond} />
-        <View style={styles.borderLayer} />
-        <View style={[styles.borderLayer, styles.borderLayer2]} />
-      </View>
-
-      {/* Content */}
       <View style={styles.container}>
         <Text style={styles.title}>Welcome to Athena</Text>
-
+        <Text style={styles.subtitle}>Empowering Women in STEM</Text>
         <TouchableOpacity
           style={styles.button}
+          activeOpacity={0.85}
           onPress={() => navigation.navigate("LoginPage")}
         >
           <Text style={styles.buttonText}>Let's Get Started</Text>
         </TouchableOpacity>
       </View>
-    </ImageBackground>
+    </LinearGradient>
   );
 }
 
@@ -39,57 +36,57 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#004D65",
     width: "100%",
     height: "100%",
-  },
-  overlay: {
-    position: "absolute",
-    width: "100%",
-    height: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  diamond: {
-    position: "absolute",
-    width: "70%",
-    height: "40%",
-    backgroundColor: "#dcdfe4",
-    transform: [{ rotate: "45deg" }],
-  },
-  borderLayer: {
-    position: "absolute",
-    width: "75%",
-    height: "45%",
-    borderWidth: 10,
-    borderColor: "#7b7191",
-    transform: [{ rotate: "45deg" }],
-  },
-  borderLayer2: {
-    width: "80%",
-    height: "50%",
-    borderColor: "#4a375d",
+    paddingHorizontal: 16,
   },
   container: {
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    padding: 20,
-    borderRadius: 10,
+    backgroundColor: "rgba(249, 211, 224, 0.15)",
+    padding: 40,
+    borderRadius: 24,
     alignItems: "center",
+    shadowColor: COLORS.secondary,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.25,
+    shadowRadius: 20,
+    elevation: 8,
+    borderColor: "#F9D3E0",
+    borderWidth: 1,
   },
   title: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: "bold",
-    color: "#fff",
-    marginBottom: 20,
+    color: "#FFFDF2",
+    marginBottom: 12,
+    letterSpacing: 1.2,
+    textShadowColor: "#3D8399",
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 8,
+  },
+  subtitle: {
+    fontSize: 18,
+    color: "#F9D3E0",
+    marginBottom: 22,
+    textAlign: "center",
+    fontStyle: "italic",
+    letterSpacing: 0.6,
   },
   button: {
-    backgroundColor: "#ff8c00",
-    paddingVertical: 12,
-    paddingHorizontal: 30,
-    borderRadius: 25,
+    backgroundColor: "#BF587C",
+    paddingVertical: 16,
+    paddingHorizontal: 42,
+    borderRadius: 32,
+    shadowColor: COLORS.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.18,
+    shadowRadius: 8,
+    elevation: 4,
   },
   buttonText: {
-    fontSize: 18,
-    color: "#fff",
+    fontSize: 21,
+    color: "#FFFDF2",
     fontWeight: "bold",
+    letterSpacing: 1.1,
   },
 });

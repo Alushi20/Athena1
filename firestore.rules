@@ -1,0 +1,103 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Users collection
+    match /users/{userId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow update: if request.auth != null && request.auth.uid == userId;
+      allow delete: if false; // Users cannot delete their own profiles
+    }
+
+    // Mentorship matches
+    match /mentorshipMatches/{matchId} {
+      allow read: if request.auth != null && 
+        (resource.data.mentorId == request.auth.uid || 
+         resource.data.menteeId == request.auth.uid);
+      allow create: if request.auth != null;
+      allow update: if request.auth != null && 
+        (resource.data.mentorId == request.auth.uid || 
+         resource.data.menteeId == request.auth.uid);
+      allow delete: if request.auth != null && 
+        (resource.data.mentorId == request.auth.uid || 
+         resource.data.menteeId == request.auth.uid);
+    }
+
+    // Mentorship sessions
+    match /mentorshipSessions/{sessionId} {
+      allow read: if request.auth != null && 
+        (resource.data.mentorId == request.auth.uid || 
+         resource.data.menteeId == request.auth.uid);
+      allow create: if request.auth != null;
+      allow update: if request.auth != null && 
+        (resource.data.mentorId == request.auth.uid || 
+         resource.data.menteeId == request.auth.uid);
+      allow delete: if request.auth != null && 
+        (resource.data.mentorId == request.auth.uid || 
+         resource.data.menteeId == request.auth.uid);
+    }
+
+    // Mentorship feedback
+    match /mentorshipFeedback/{feedbackId} {
+      allow read: if request.auth != null && 
+        (resource.data.mentorId == request.auth.uid || 
+         resource.data.menteeId == request.auth.uid);
+      allow create: if request.auth != null;
+      allow update: if request.auth != null && 
+        (resource.data.mentorId == request.auth.uid || 
+         resource.data.menteeId == request.auth.uid);
+      allow delete: if false; // Feedback cannot be deleted
+    }
+
+    // Mentor availability
+    match /mentorAvailability/{slotId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null && 
+        resource.data.mentorId == request.auth.uid;
+      allow update: if request.auth != null && 
+        resource.data.mentorId == request.auth.uid;
+      allow delete: if request.auth != null && 
+        resource.data.mentorId == request.auth.uid;
+    }
+
+    // Chat messages
+    match /chatMessages/{messageId} {
+      allow read: if request.auth != null && 
+        resource.data.matchId in get(/databases/$(database)/documents/mentorshipMatches/$(resource.data.matchId)).data.mentorId == request.auth.uid ||
+        get(/databases/$(database)/documents/mentorshipMatches/$(resource.data.matchId)).data.menteeId == request.auth.uid;
+      allow create: if request.auth != null;
+      allow update: if false; // Messages cannot be updated
+      allow delete: if false; // Messages cannot be deleted
+    }
+
+    // Workshops
+    match /workshops/{workshopId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'mentor';
+      allow update: if request.auth != null && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'mentor';
+      allow delete: if request.auth != null && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'mentor';
+    }
+
+    // Events
+    match /events/{eventId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'mentor';
+      allow update: if request.auth != null && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'mentor';
+      allow delete: if request.auth != null && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'mentor';
+    }
+
+    // Communities
+    match /communities/{communityId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null;
+      allow delete: if request.auth != null;
+    }
+  }
+} 

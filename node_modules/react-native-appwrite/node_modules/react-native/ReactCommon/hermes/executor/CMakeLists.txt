@@ -6,22 +6,23 @@
 cmake_minimum_required(VERSION 3.13)
 set(CMAKE_VERBOSE_MAKEFILE on)
 
-add_compile_options(-std=c++20)
+include(${REACT_COMMON_DIR}/cmake-utils/react-native-flags.cmake)
 
 file(GLOB_RECURSE hermes_executor_SRC CONFIGURE_DEPENDS *.cpp)
 add_library(
         hermes_executor_common
-        STATIC
+        OBJECT
         ${hermes_executor_SRC}
 )
 target_include_directories(hermes_executor_common PUBLIC .)
 target_link_libraries(hermes_executor_common
-        jsireact
         hermes-engine::libhermes
-        jsi
         hermes_inspector_modern
+        jsi
+        reactnative
 )
 
+target_compile_reactnative_options(hermes_executor_common PRIVATE)
 if(${CMAKE_BUILD_TYPE} MATCHES Debug)
         target_compile_options(
                 hermes_executor_common
